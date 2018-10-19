@@ -1,26 +1,70 @@
-document.onkeyup = function(event) {
-    enterGame(event);
-    // gameSession(event):
+var userTyped = ''
+window.onload = function () { 
+    // alert("Let's play a game!");
+    // prepare for new game
+        // methods should re-use after game is lost or won by user
+        // maybe check how many games (if options are all used up)
+        // setup
+        // listen for key
+    // load all of the variables
 }
 
-// function gameSession(event) {
-//     var userTyped = event.key;
-//     var activeGameSession = 0;
-//     var activePlay = 0;
+// add alert to control flow before and after game -- buffer
+// 
+// the button 
+document.onkeyup = function(event) {
+    userTyped = event.key;
+    evaluateLetter();
+    enterGame(event);
+}
 
+var alphaUpperArray = str.toUpperCase().split("");
+var str = "abcdefghijklmnopqrstuvwxyz";
 
+var alphaArray = str.split(""); // the argument is a null string, "".
+function evaluateLetter(input) {
+    function allLetter(inputtxt)
+  {
+   var letters = /^[A-Za-z]+$/;
+   if(inputtxt.value.match(letters))
+     {
+      return true;
+     }
+   else
+     {
+     alert("message");
+     return false;
+     }
+  }
+
+}
+
+// document.onload = function() {
+//     game.runGame(event)
 // }
 
-// function enterGame(event) {
-//     game.runGame(event);
-// }
+
+function gameSession(event) {
+    // var userTyped = event.key;
+
+    var activeGameSession = 0;
+    var activePlay = 0;
+
+
+}
+
+function enterGame(event) {
+    game.runGame(event);
+}
 
 var game = {
-    wins: 0,
-    plays: 0,
     active: 0,
-    wrongCount: 0,
-    guessLetters: [],
+    wins: 0,
+    // can combine and maybe use the guessLetters array length for logic to end game
+        plays: 0,
+        wrongCount: 0,
+        guessLetters: [],
+    // last comment
     guessDisplay: '',
     guessSolution: '',
     lastTyped: '',
@@ -38,6 +82,8 @@ var game = {
     preSteps: function() {
         var i = (this.plays%5);
         this.chooseWord(i);
+        // zero all variables before printing
+        // set variables should be elsewhere
         this.setVariables();
     },
 
@@ -48,9 +94,9 @@ var game = {
     },
 
     gameSteps: function() {
-        if (this.guessLetters.indexOf(this.lastTyped) == -1) {
-            this.plays+=1;
-            this.guessLetters.push(this.lastTyped);
+        if (this.guessLetters.indexOf(this.lastTyped) == -1) {      //if the input is new
+            this.plays+=1;                                          //increase play count
+            this.guessLetters.push(this.lastTyped);                 //add letter to arr of played letters
             this.checkIfCorrect();
             this.checkIfGameOver();
             this.setVariables();
@@ -58,31 +104,31 @@ var game = {
     },
 
     checkIfCorrect: function() {
-        correct = 0;
-        for (i = 0; i < this.guessSolution.length; i++) {
-            if (this.guessSolution[i] == this.lastTyped) {
-                correct = 1;
-                this.guessDisplay[i] == this.lastTyped;
+        correct = 0;                                                //assume init not correct
+        for (i = 0; i < this.guessSolution.length; i++) {           //loop through each letter
+            if (this.guessSolution[i] == this.lastTyped) {          //if any letters match
+                correct = 1;                                        //flag as correct
+                this.guessDisplay[i] == this.lastTyped;             //swipe the dash for the letter
             }
         }
-        if (correct == 0) {
-            this.wrongCount=+1;
+        if (correct == 0) {                                         //if flag was never set to correct
+            this.wrongCount=+1;                                     //increase count for wrong -- needed?
         }
 
     },
 
-    checkIfGameOver: function() {
-        if (this.guessSolution == this.guessDisplay) {
-            this.wins =+ 1;
+    checkIfGameOver: function() {                                   
+        if (this.guessSolution == this.guessDisplay) {              //if the displayed and correct match
+            this.wins =+ 1;                                         //the game has ended - user wins
             this.active = 0;
         } 
-        else if (this.wrongCount > 30) {
+        else if (this.wrongCount > 30) {                            //user losses and game ends at 30 tries
             this.active = 0;
         }
     },
 
-    gameOverSeq: function() {
-        // get media after win
+    gameOverSeq: function() {                                       //sequence for the end of the game
+        // get media after win                                      //maybe add loss/won logic
     },
 
     setVariables: function() {

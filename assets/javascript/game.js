@@ -5,10 +5,6 @@ var randomizedArray = []
 window.onload = function () { 
     randomizedArray = initArray
     shuffleArray(randomizedArray)
-
-    // var audioElement = document.createElement("audio")
-    // audioElement.setAttribute("src", "assets/audio/Kokiri_Forest.mp3")
-    // audioElement.play()
 }
 
 document.onkeyup = function(event) {

@@ -1,174 +1,162 @@
 var userTyped = ''
+var initArray = [0,1,2,3,4,5,6,7]
+var randomizedArray = []
+
 window.onload = function () { 
-    // alert("Let's play a game!");
-    // prepare for new game
-        // methods should re-use after game is lost or won by user
-        // maybe check how many games (if options are all used up)
-        // setup
-        // listen for key
-    // load all of the variables
+    randomizedArray = initArray
+    shuffleArray(randomizedArray)
+
+    // var audioElement = document.createElement("audio")
+    // audioElement.setAttribute("src", "assets/audio/Kokiri_Forest.mp3")
+    // audioElement.play()
 }
 
-// add alert to control flow before and after game -- buffer
-// 
-// the button 
 document.onkeyup = function(event) {
-    userTyped = event.key;
-    evaluateLetter();
-    enterGame(event);
+    userTyped = event.key      //save input key
+    game.runGame()
 }
 
-var alphaUpperArray = str.toUpperCase().split("");
-var str = "abcdefghijklmnopqrstuvwxyz";
-
-var alphaArray = str.split(""); // the argument is a null string, "".
-function evaluateLetter(input) {
-    function allLetter(inputtxt)
-  {
-   var letters = /^[A-Za-z]+$/;
-   if(inputtxt.value.match(letters))
-     {
-      return true;
-     }
-   else
-     {
-     alert("message");
-     return false;
-     }
-  }
-
-}
-
-// document.onload = function() {
-//     game.runGame(event)
-// }
-
-
-function gameSession(event) {
-    // var userTyped = event.key;
-
-    var activeGameSession = 0;
-    var activePlay = 0;
-
-
-}
-
-function enterGame(event) {
-    game.runGame(event);
+function shuffleArray(array) {                              //i did not create this method - this is from the internet
+    for (let i = array.length - 1; i > 0; i--) {            //using it to shuffle the initial order of the solution array
+        const j = Math.floor(Math.random() * (i + 1));      //see in line 49
+        [array[i], array[j]] = [array[j], array[i]];        
+    }
 }
 
 var game = {
-    active: 0,
-    wins: 0,
-    // can combine and maybe use the guessLetters array length for logic to end game
-        plays: 0,
-        wrongCount: 0,
-        guessLetters: [],
-    // last comment
-    guessDisplay: '',
-    guessSolution: '',
-    lastTyped: '',
+    active: 0,                                      //save state (game is running or not)
+    wins: 0,                                        //how many times the user has won
+    plays: 0,
+    losses: 0,                                       //how many times the user has played
+    wrongCount: 0,                                  //how many letters the user has gotten wrong
+    guessLetters: [],                               //letters guessed by user
+    wrongLetters: [],
+    guessDisplay: [],                               //the solution that is displayed with underscores
+    guessSolution: [],                              //the correct solution
 
-    runGame: function(event) {
-        this.lastTyped = event.key;
-        if (this.active == 0) {
-            this.preSteps();
+    runGame: function() {                           //this controls whether to keep playing or start a new game
+        if (this.active == 0) {                     //if a game is not running, start a new one
+            this.preSteps()
         }
-        else {
-            this.gameSteps();
+        else {                                      //if game is running...
+            if (this.validInput()) {                //verify that the input is a valid letter
+                this.gameSteps()                   //if it is valid, play a turn in the game
+            }
         }
     },
 
     preSteps: function() {
-        var i = (this.plays%5);
-        this.chooseWord(i);
-        // zero all variables before printing
-        // set variables should be elsewhere
-        this.setVariables();
+        this.active = 1
+        this.wrongCount = 0
+        this.guessDisplay = []
+        wordIndex = randomizedArray[this.plays]
+        this.chooseWord(wordIndex)
+        userTyped = 'START'
+        this.setVariables()
+    },
+
+    validInput: function() {
+        var alpha = "abcdefghijklmnopqrstuvwxyz"
+        var alphaArray = alpha.toUpperCase().split("")
+        userTyped = userTyped.toUpperCase()
+        if (alphaArray.indexOf(userTyped) != -1) {
+            return true
+        }
+        else {
+            return false
+        }
     },
 
     chooseWord: function(index) {
-        var selection = ["Option1", "Option2 Combo", "Option3", "Option4", "Option5"];
-        this.guessSolution = selection[index];
-        this.guessDisplay = "-".repeat(this.guessSolution.length);
+        var selection = ["Disenchantment", "Stranger Things", "Black Mirror", "House Of Cards", "Daredevil", "Ozark", "Big Mouth", "Grace and Frankie"]          
+        this.guessSolution = selection[index].toUpperCase().split("");
+        for (i = 0; i < this.guessSolution.length; i++) {
+            if (this.guessSolution[i] == " ") {
+                this.guessDisplay.push("  ")
+            }
+            else {
+                this.guessDisplay.push("_")
+            }
+        }
     },
 
     gameSteps: function() {
-        if (this.guessLetters.indexOf(this.lastTyped) == -1) {      //if the input is new
-            this.plays+=1;                                          //increase play count
-            this.guessLetters.push(this.lastTyped);                 //add letter to arr of played letters
-            this.checkIfCorrect();
-            this.checkIfGameOver();
-            this.setVariables();
+        if (this.guessLetters.indexOf(userTyped) == -1) {      //if the input is new
+            this.guessLetters.push(userTyped)                 //add letter to arr of played letters
+            this.checkIfCorrect()
+            this.checkIfGameOver()
+            this.setVariables()
         }
     },
 
     checkIfCorrect: function() {
-        correct = 0;                                                //assume init not correct
+        var correct = 0                                              //assume init not correct
         for (i = 0; i < this.guessSolution.length; i++) {           //loop through each letter
-            if (this.guessSolution[i] == this.lastTyped) {          //if any letters match
-                correct = 1;                                        //flag as correct
-                this.guessDisplay[i] == this.lastTyped;             //swipe the dash for the letter
+            if (this.guessSolution[i] == userTyped) {          //if any letters match
+                correct++                                       //flag as correct
+                this.guessDisplay[i] = userTyped             //swipe the dash for the letter
             }
         }
         if (correct == 0) {                                         //if flag was never set to correct
-            this.wrongCount=+1;                                     //increase count for wrong -- needed?
+            this.wrongCount+=1
+            this.wrongLetters.push(userTyped)                     //increase count for wrong -- needed?
         }
 
     },
 
     checkIfGameOver: function() {                                   
-        if (this.guessSolution == this.guessDisplay) {              //if the displayed and correct match
-            this.wins =+ 1;                                         //the game has ended - user wins
-            this.active = 0;
+        if (this.guessDisplay.indexOf("_") == -1 ) {              //if the displayed and correct match
+            this.wins++                               //the game has ended - user wins
+            this.active = 0
+            this.plays++
+            this.gameOverSeq()
         } 
-        else if (this.wrongCount > 30) {                            //user losses and game ends at 30 tries
-            this.active = 0;
+        else if (this.wrongCount >= 10) {                            //user losses and game ends at 30 tries
+            this.active = 0
+            this.plays++
+            this.losses++
+            this.gameOverSeq()
         }
     },
 
-    gameOverSeq: function() {                                       //sequence for the end of the game
-        // get media after win                                      //maybe add loss/won logic
+    gameOverSeq: function() {                                       
+        this.guessLetters = []
+        this.wrongLetters = []
+        this.guessDisplay = this.guessSolution
+        this.guessSolution = []
+        if (this.plays >= 8) {
+            alert("You played all the shows! Congrats!")
+        }
+    },
+
+    setDisplaySolution: function() {
+        var stringForDisplay = ''
+        for (i = 0; i< this.guessDisplay.length; i++) {
+            if (this.guessDisplay[i] == ' ') {
+                stringForDisplay += '\xa0'
+            }
+            else {
+                stringForDisplay += this.guessDisplay[i] + '\xa0'
+            }
+        }
+        return stringForDisplay
     },
 
     setVariables: function() {
-        var userTyped = document.getElementById("me-type");
-        var currentGuess = document.getElementById("current-guess");
-        var correctAnswer = document.getElementById("correct-answer");
-        var myAttempts = document.getElementById("my-attempts");
-        userTyped.textContent = this.lastTyped;
-        currentGuess.textContent = this.guessDisplay;
-        correctAnswer.textContent = this.guessSolution;
-        myAttempts.textContent = 3;
+        var userTypedDisplay = document.getElementById("me-type")
+        var currentGuess = document.getElementById("current-guess")
+        var winsDisplay = document.getElementById("wins")
+        var wrongLettersDisplay = document.getElementById("wrong-letters")
+        var lossesDisplay = document.getElementById("losses")
+        var triesRemainingDisplay = document.getElementById("tries-remaining")
+        var triesLeft = (10 - this.wrongCount)
+
+        userTypedDisplay.textContent = userTyped
+        currentGuess.textContent = this.setDisplaySolution()
+        winsDisplay.textContent = this.wins
+        wrongLettersDisplay.textContent = this.wrongLetters
+        lossesDisplay.textContent = this.losses
+        triesRemainingDisplay.textContent = triesLeft
     }
 
 }
-
-// type, if the game is active, run Game steps if not over
-// if game is new, run preSteps
-// preSteps
-//      chooseWord
-//      setVariables (guess, displayed guess), plays, wins
-// gameSteps
-//      getInput
-//      validateAsNew -- if no, exit
-//      enterPlay
-//          increase play counter
-//          add to played letters
-//          check if correct
-//          if true - update diplay guess
-//          if false - update wrong guesses
-//          verify if game over (guessed all or how many wrong)
-//          if game over -- increase plays, losses, game-over mode
-//          if not over, update varibles in display
-// gameOver
-//      showSolution, updatePlays, setActiveToFalse
-// showSolution
-//      displayGuess to show all
-//      add some media on html related to guess
-//
-// 
-// 
-// update to have on-load variable init
-// based on that choose whether to new-game, enter-game
-// reuse for game over

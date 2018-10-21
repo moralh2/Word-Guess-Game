@@ -1,0 +1,24 @@
+html {
+    min-height: 100%;
+    background: radial-gradient(transparent, black);
+}
+
+body {
+    background-color: inherit;
+}
+
+.box {
+    display: inline-block;
+    width: 5rem;
+    height: 5rem;
+    margin: .25rem;
+}
+
+.bombita {
+    font-size: 4rem;
+    vertical-align: middle;
+    padding-left: 0.50rem;
+}
+#current-guess {
+    font-size: 4rem;
+}

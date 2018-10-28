@@ -49,6 +49,7 @@ var game = {
         this.chooseWord(wordIndex)
         userTyped = 'START'
         this.setVariables()
+        this.setEmojis()
     },
 
     validInput: function() {
@@ -96,6 +97,7 @@ var game = {
         if (correct == 0) {                                         //if flag was never set to correct
             this.wrongCount+=1
             this.wrongLetters.push(userTyped)                     //increase count for wrong -- needed?
+            this.setBombita()                                      //add bomb emoji
         }
 
     },
@@ -153,6 +155,21 @@ var game = {
         wrongLettersDisplay.textContent = this.wrongLetters
         lossesDisplay.textContent = this.losses
         triesRemainingDisplay.textContent = triesLeft
+    },
+
+    setEmojis: function() {
+        var bombitas = [' 😕 ',' ☹️ ',' 😟 ',' 😞 ',' 😢 ',' 😭 ',' 😰 ',' 😱 ',' 😳 ',' 👻 ']
+        for (i = 0; i < bombitas.length; i++) {        
+            var counter = i + 1
+            var lifeHere = document.getElementById("life-" + counter)
+            lifeHere.textContent = bombitas[i]
+        }
+    },
+
+    setBombita: function() {
+        var bombita = ' 💣 '
+        var lifeCurrent = document.getElementById("life-" + this.wrongCount)
+        lifeCurrent.textContent = bombita
     }
 
 }
